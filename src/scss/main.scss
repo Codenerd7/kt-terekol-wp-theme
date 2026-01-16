@@ -1,0 +1,34 @@
+/**
+ * KT Terekol - Главный файл стилей
+ *
+ * Точка входа для Vite сборки SCSS
+ */
+
+// ===================
+// Base (порядок важен!)
+// ===================
+@import 'base/variables';    // CSS-переменные
+@import 'base/reset';        // Сброс стилей
+@import 'base/typography';   // Типографика
+@import 'base/globals';      // Глобальные стили и утилиты
+
+// ===================
+// Layouts
+// ===================
+@import 'layouts/header';
+@import 'layouts/footer';
+// @import 'layouts/grid';
+
+// ===================
+// Components
+// ===================
+// @import 'components/forms';
+// @import 'components/navigation';
+// @import 'components/breadcrumbs';
+
+// ===================
+// Blocks (page sections)
+// ===================
+// @import 'blocks/hero';
+// @import 'blocks/products';
+// @import 'blocks/news';

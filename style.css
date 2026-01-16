@@ -1,0 +1,18 @@
+/*
+Theme Name: KT Terekol
+Theme URI: https://kt-terekol.kz
+Author: KT Terekol Development Team
+Author URI: https://kt-terekol.kz
+Description: Корпоративная тема для ТОО «КТ Теренколь» — кредитование агропромышленного комплекса Республики Казахстан.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.4
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: kt-terekol
+Tags: custom-logo, custom-menu, featured-images, translation-ready
+
+Стили компилируются через Vite из src/scss/ в assets/css/
+Этот файл содержит только метаданные темы.
+*/
