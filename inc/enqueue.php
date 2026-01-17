@@ -14,12 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Подключение стилей и скриптов на фронтенде
  */
 function kt_enqueue_assets() {
-    // Основные стили
+
+   // Основные стили темы (assets) — один источник
     wp_enqueue_style(
         'kt-main-styles',
         KT_THEME_URI . '/assets/css/styles.css',
         [],
-        KT_THEME_VERSION
+        filemtime( KT_THEME_DIR . '/assets/css/styles.css' )
     );
 
     // Основной JS
@@ -30,5 +31,9 @@ function kt_enqueue_assets() {
         KT_THEME_VERSION,
         true
     );
+
+    
 }
+
 add_action( 'wp_enqueue_scripts', 'kt_enqueue_assets' );
+
