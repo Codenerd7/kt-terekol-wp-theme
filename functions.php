@@ -52,3 +52,62 @@ if ( class_exists( 'ACF' ) ) {
         require_once $acf_fields;
     }
 }
+
+/**
+ * Handle request form submit (Front page)
+ */
+add_action('admin_post_nopriv_kt_request_form_submit', 'kt_handle_request_form_submit');
+add_action('admin_post_kt_request_form_submit', 'kt_handle_request_form_submit');
+
+function kt_handle_request_form_submit(): void {
+  // Basic nonce check
+  if ( ! isset($_POST['kt_request_nonce']) || ! wp_verify_nonce($_POST['kt_request_nonce'], 'kt_request_form') ) {
+    wp_safe_redirect( home_url('/?request=error#request') );
+    exit;
+  }
+
+  // Honeypot: if filled, silently succeed (or error) to avoid giving signal to bots
+  if ( ! empty($_POST['website']) ) {
+    wp_safe_redirect( home_url('/?request=success#request') );
+    exit;
+  }
+
+  $name    = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
+  $phone   = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
+  $message = isset($_POST['message']) ? sanitize_textarea_field($_POST['message']) : '';
+
+  // Minimal validation
+  if ( $name === '' || $phone === '' ) {
+    wp_safe_redirect( home_url('/?request=error#request') );
+    exit;
+  }
+
+  $to = get_option('admin_email');
+  $subject = 'Новая заявка на консультацию (КТ Теренколь)';
+
+  $body_lines = [
+    'Поступила новая заявка с сайта.',
+    '',
+    'Имя: ' . $name,
+    'Телефон: ' . $phone,
+  ];
+
+  if ( $message !== '' ) {
+    $body_lines[] = 'Комментарий: ' . $message;
+  }
+
+  $body_lines[] = '';
+  $body_lines[] = 'Источник: ' . home_url('/');
+  $body_lines[] = 'Дата/время: ' . wp_date('Y-m-d H:i');
+
+  $body = implode("\n", $body_lines);
+
+  $headers = [
+    'Content-Type: text/plain; charset=UTF-8',
+  ];
+
+  $sent = wp_mail($to, $subject, $body, $headers);
+
+  wp_safe_redirect( home_url( $sent ? '/?request=success#request' : '/?request=error#request' ) );
+  exit;
+}
