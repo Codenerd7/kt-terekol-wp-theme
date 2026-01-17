@@ -270,8 +270,19 @@ body {
   }
 }
 
-// Primary button
+// Primary button (Bootstrap-style)
 .btn-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    color: #fff;
+  }
+}
+
+// Primary button (BEM-style)
+.btn--primary {
   background-color: var(--color-primary);
   color: #fff;
 
@@ -293,8 +304,18 @@ body {
   }
 }
 
-// Ghost button
+// Ghost button (Bootstrap-style)
 .btn-ghost {
+  background-color: transparent;
+  color: var(--color-text);
+
+  &:hover {
+    background-color: var(--color-surface);
+  }
+}
+
+// Ghost button (BEM-style)
+.btn--ghost {
   background-color: transparent;
   color: var(--color-text);
 
