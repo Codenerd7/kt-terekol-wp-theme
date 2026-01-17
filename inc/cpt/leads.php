@@ -46,3 +46,26 @@ function kt_register_lead_cpt(): void {
 
     register_post_type( 'kt_lead', $args );
 }
+
+/**
+ * Metabox: Комментарий клиента (read-only)
+ */
+add_action( 'add_meta_boxes', 'kt_add_lead_metaboxes' );
+
+function kt_add_lead_metaboxes(): void {
+    add_meta_box(
+        'kt_lead_message',
+        'Комментарий клиента',
+        'kt_render_lead_message_metabox',
+        'kt_lead',
+        'normal',
+        'default'
+    );
+}
+
+function kt_render_lead_message_metabox( $post ): void {
+    $message = get_post_meta( $post->ID, 'kt_message', true );
+    echo '<p style="white-space: pre-wrap; margin: 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">';
+    echo esc_html( $message ?: '—' );
+    echo '</p>';
+}
