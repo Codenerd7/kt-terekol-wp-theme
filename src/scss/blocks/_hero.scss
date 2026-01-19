@@ -1,0 +1,269 @@
+/**
+ * Hero Section Styles
+ */
+
+.hero {
+  padding: var(--space-10) 0;
+  background: url('../images/hero-bg.jpg') center top / cover no-repeat;
+}
+
+// Layout: две колонки на desktop
+.hero__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 360px;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 1fr 400px;
+  }
+}
+
+// Левая колонка
+.hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.hero__eyebrow {
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.hero__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.hero__text {
+  font-size: 1.125rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 600px;
+}
+
+// Ссылка на программы
+.hero__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition-base);
+
+  &:hover {
+    text-decoration: underline;
+
+    .hero__link-arrow {
+      transform: translateX(4px);
+      text-decoration: none;
+      display: inline-block;
+    }
+  }
+}
+
+.hero__link-arrow {
+  display: inline-block;
+  transition: transform var(--transition-base);
+}
+
+// Подложка для нижнего блока (на всю ширину контейнера)
+.hero__lower {
+  margin-top: var(--space-6);
+  padding: 20px 24px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+// Факты (3 пункта)
+.hero__facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9375rem;
+    color: var(--color-text);
+
+    &::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--color-primary);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Шаги (3 шага)
+.hero__steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: var(--space-5);
+  }
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    counter-increment: step;
+
+    &::before {
+      content: counter(step);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--color-primary);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Правая колонка (aside)
+.hero__aside {
+  @media (max-width: 767px) {
+    order: 10; // уходит вниз на мобилке
+  }
+}
+
+// Карточка
+.hero-card {
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hero-card__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.hero-card__text {
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.hero-card__benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.875rem;
+    color: var(--color-text);
+
+    &::before {
+      content: '✓';
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+  }
+}
+
+.hero-card__btn {
+  width: 100%;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.hero-card__icon {
+  flex-shrink: 0;
+  animation: phone-ring 3s ease-in-out infinite;
+}
+
+@keyframes phone-ring {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  5% {
+    transform: rotate(-12deg);
+  }
+  10% {
+    transform: rotate(12deg);
+  }
+  15% {
+    transform: rotate(-8deg);
+  }
+  20% {
+    transform: rotate(8deg);
+  }
+  25%, 100% {
+    transform: rotate(0deg);
+  }
+}
+
+.hero-card__note {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  text-align: center;
+  margin: 0;
+  opacity: 0.8;
+}
