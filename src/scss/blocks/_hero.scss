@@ -66,20 +66,23 @@
   text-decoration: none;
   transition: var(--transition-base);
 
-  &:hover {
+  &:hover .hero__link-text {
     text-decoration: underline;
-
-    .hero__link-arrow {
-      transform: translateX(4px);
-      text-decoration: none;
-      display: inline-block;
-    }
   }
+
+  &:hover .hero__link-arrow {
+    transform: translateX(4px);
+  }
+}
+
+.hero__link-text {
+  text-decoration: none;
 }
 
 .hero__link-arrow {
   display: inline-block;
   transition: transform var(--transition-base);
+  text-decoration: none;
 }
 
 // Подложка для нижнего блока (на всю ширину контейнера)
@@ -87,7 +90,7 @@
   margin-top: var(--space-6);
   padding: 20px 24px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255);
   backdrop-filter: blur(4px);
   display: flex;
   flex-direction: column;

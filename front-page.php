@@ -9,26 +9,55 @@ get_header();
 <main id="main" class="site-main">
   <section class="hero" aria-labelledby="hero-title">
     <div class="container">
-      <p class="hero__eyebrow">ТОО «КТ Теренколь»</p>
+      <div class="hero__layout">
+        <!-- Левая колонка -->
+        <div class="hero__content">
+          <h1 id="hero-title" class="hero__title">
+            Кредитование агропромышленного комплекса Республики Казахстан
+          </h1>
 
-      <h1 id="hero-title" class="hero__title">
-        Кредитование агропромышленного комплекса Республики Казахстан
-      </h1>
+          <p class="hero__text">
+            Прозрачные условия, понятные требования и сопровождение заявки на каждом этапе.
+          </p>
 
-      <p class="hero__text">
-        Прозрачные условия, понятные требования и сопровождение заявки на каждом этапе.
-      </p>
+          <?php
+          $programs_page = get_page_by_path( 'programmy-kreditovaniya' );
+          $programs_url  = $programs_page ? get_permalink( $programs_page ) : get_post_type_archive_link( 'product' );
+          ?>
+          <a class="hero__link" href="<?php echo esc_url( $programs_url ); ?>">
+            <span class="hero__link-text">Программы кредитования</span> <span class="hero__link-arrow">→</span>
+          </a>
+        </div>
 
-      <div class="hero__actions">
-        <a class="btn btn--primary" href="#request">Получить консультацию</a>
-        <a class="btn btn--ghost" href="/programmy-kreditovaniya/">Программы кредитования</a>
+        <!-- Правая колонка -->
+        <aside class="hero__aside" role="complementary">
+          <div class="hero-card">
+            <h2 class="hero-card__title">Консультация за 1 минуту</h2>
+            <p class="hero-card__text">
+              Оставьте имя и телефон — специалист перезвонит и подскажет, какие документы нужны и какая программа подходит.
+            </p>
+            <ul class="hero-card__benefits">
+              <li>Понятный список документов</li>
+              <li>Подбор программы</li>
+              <li>Сопровождение</li>
+            </ul>
+            <a class="btn btn--primary hero-card__btn" href="#apply">
+              <svg class="hero-card__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              Заказать звонок
+            </a>
+            <p class="hero-card__note">Без спама. Только по вашей заявке.</p>
+          </div>
+        </aside>
       </div>
 
-      <ul class="hero__facts" aria-label="Ключевые преимущества">
-        <li>Фермерам и ИП в АПК</li>
-        <li>Понятный перечень документов</li>
-        <li>Поддержка специалистов</li>
-      </ul>
+      <!-- Нижняя дымка на всю ширину контейнера -->
+      <div class="hero__lower">
+        <ol class="hero__steps" aria-label="Как это работает">
+          <li>Оставляете заявку</li>
+          <li>Уточняем цель и документы</li>
+          <li>Подбираем программу и сопровождаем оформление</li>
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -65,7 +94,7 @@ get_header();
   endif;
   ?>
 
-  <section id="request" class="section request">
+  <section id="apply" class="section request">
     <div class="container">
       <h2 class="request__title">Оставить заявку на консультацию</h2>
 
