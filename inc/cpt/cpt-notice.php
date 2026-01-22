@@ -209,6 +209,9 @@ function kt_render_notice_metabox( $post ) {
                     </a>
                 </div>
             <?php endif; ?>
+            <small style="color: #666; margin-top: 6px; display: block;">
+                💡 Файл заполняется автоматически при вставке PDF через блок «Файл» в редакторе.
+            </small>
         </div>
     </div>
 
@@ -251,12 +254,17 @@ function kt_save_notice_meta( $post_id ) {
     }
 
     // Сохранение полей
-    $fields = [ 'kt_notice_organization', 'kt_notice_date', 'kt_notice_year', 'kt_notice_month', 'kt_notice_file' ];
+    $fields = [ 'kt_notice_organization', 'kt_notice_date', 'kt_notice_year', 'kt_notice_month' ];
 
     foreach ( $fields as $field ) {
         if ( isset( $_POST[ $field ] ) ) {
             update_post_meta( $post_id, $field, sanitize_text_field( $_POST[ $field ] ) );
         }
+    }
+
+    // Файл: не затираем если в POST пусто (мог быть заполнен автоматически)
+    if ( ! empty( $_POST['kt_notice_file'] ) ) {
+        update_post_meta( $post_id, 'kt_notice_file', esc_url_raw( $_POST['kt_notice_file'] ) );
     }
 
     // Автозаполнение заголовка
@@ -359,6 +367,89 @@ function kt_get_notice_views( $post_id = null ) {
     }
     return (int) get_post_meta( $post_id, 'kt_notice_views', true );
 }
+
+/**
+ * Автоперенос PDF из блока core/file в мета-поле
+ *
+ * При сохранении извещения:
+ * 1. Находит первый блок core/file в контенте
+ * 2. Извлекает URL файла
+ * 3. Сохраняет в мета-поле kt_notice_file
+ *
+ * Используем wp_after_insert_post — работает и с Gutenberg (REST API)
+ */
+function kt_auto_extract_file_from_content( $post_id, $post, $update ) {
+    // Только для kt_notice
+    if ( ! $post || $post->post_type !== 'kt_notice' ) {
+        return;
+    }
+
+    // Не обрабатываем ревизии
+    if ( wp_is_post_revision( $post_id ) ) {
+        return;
+    }
+
+    // Только для опубликованных и черновиков
+    if ( ! in_array( $post->post_status, [ 'publish', 'draft', 'pending' ], true ) ) {
+        return;
+    }
+
+    // Парсим блоки
+    $blocks = parse_blocks( $post->post_content );
+    if ( empty( $blocks ) ) {
+        return;
+    }
+
+    // Ищем первый блок core/file и извлекаем URL
+    $file_url = '';
+
+    foreach ( $blocks as $block ) {
+        if ( $block['blockName'] === 'core/file' ) {
+            // Способ 1: из атрибутов
+            if ( ! empty( $block['attrs']['href'] ) ) {
+                $file_url = $block['attrs']['href'];
+            }
+            // Способ 2: по attachment ID
+            elseif ( ! empty( $block['attrs']['id'] ) ) {
+                $file_url = wp_get_attachment_url( $block['attrs']['id'] );
+            }
+            // Способ 3: из innerHTML (регуляркой)
+            elseif ( ! empty( $block['innerHTML'] ) ) {
+                if ( preg_match( '/href=["\']([^"\']+)["\']/', $block['innerHTML'], $matches ) ) {
+                    $file_url = $matches[1];
+                }
+            }
+            break; // Берём только первый блок
+        }
+    }
+
+    // Сохраняем URL в мета-поле
+    if ( $file_url ) {
+        update_post_meta( $post_id, 'kt_notice_file', esc_url_raw( $file_url ) );
+    }
+}
+add_action( 'wp_after_insert_post', 'kt_auto_extract_file_from_content', 20, 3 );
+
+/**
+ * Скрытие ссылок в блоке core/file на странице извещения
+ *
+ * Превью PDF остаётся, убираются:
+ * - текстовая ссылка с названием файла
+ * - кнопка "Скачать"
+ * Чтобы не дублировать кастомную кнопку "Скачать извещение"
+ */
+function kt_hide_file_button_on_notice( $block_content, $block ) {
+    if ( is_singular( 'kt_notice' ) && $block['blockName'] === 'core/file' ) {
+        // Убираем все ссылки <a> внутри блока, оставляем только <object> с превью
+        $block_content = preg_replace(
+            '/<a[^>]*>.*?<\/a>/s',
+            '',
+            $block_content
+        );
+    }
+    return $block_content;
+}
+add_filter( 'render_block', 'kt_hide_file_button_on_notice', 10, 2 );
 
 /**
  * Получить извещения сгруппированные по годам и месяцам
