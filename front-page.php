@@ -94,6 +94,80 @@ get_header();
   endif;
   ?>
 
+  <?php
+  // Секция "Новости"
+  $news_cat = get_category_by_slug( 'news' );
+  if ( $news_cat ) :
+      $news_query = new WP_Query( [
+          'post_type'      => 'post',
+          'posts_per_page' => 3,
+          'post_status'    => 'publish',
+          'cat'            => $news_cat->term_id,
+          'orderby'        => 'date',
+          'order'          => 'DESC',
+      ] );
+
+      if ( $news_query->have_posts() ) :
+      ?>
+      <section class="section latest-news">
+        <div class="container">
+          <header class="latest-news__header">
+            <h2 class="latest-news__title">Новости</h2>
+            <a href="<?php echo esc_url( get_category_link( $news_cat ) ); ?>" class="latest-news__link">
+              Все новости &rarr;
+            </a>
+          </header>
+
+          <div class="news-grid">
+            <?php while ( $news_query->have_posts() ) : $news_query->the_post(); ?>
+              <?php get_template_part( 'template-parts/news-card' ); ?>
+            <?php endwhile; ?>
+          </div>
+        </div>
+      </section>
+      <?php
+      wp_reset_postdata();
+      endif;
+  endif;
+  ?>
+
+  <?php
+  // Секция "Статьи"
+  $articles_cat = get_category_by_slug( 'articles' );
+  if ( $articles_cat ) :
+      $articles_query = new WP_Query( [
+          'post_type'      => 'post',
+          'posts_per_page' => 3,
+          'post_status'    => 'publish',
+          'cat'            => $articles_cat->term_id,
+          'orderby'        => 'date',
+          'order'          => 'DESC',
+      ] );
+
+      if ( $articles_query->have_posts() ) :
+      ?>
+      <section class="section latest-articles">
+        <div class="container">
+          <header class="latest-articles__header">
+            <h2 class="latest-articles__title">Статьи</h2>
+            <a href="<?php echo esc_url( get_category_link( $articles_cat ) ); ?>" class="latest-articles__link">
+              Все статьи &rarr;
+            </a>
+          </header>
+
+          <div class="articles-grid">
+            <?php while ( $articles_query->have_posts() ) : $articles_query->the_post(); ?>
+              <?php get_template_part( 'template-parts/article-card' ); ?>
+            <?php endwhile; ?>
+          </div>
+        </div>
+      </section>
+      <?php
+      wp_reset_postdata();
+      endif;
+  endif;
+  ?>
+
   <section id="apply" class="section request">
     <div class="container">
       <h2 class="request__title">Оставить заявку на консультацию</h2>
