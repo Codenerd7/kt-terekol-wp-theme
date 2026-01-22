@@ -239,6 +239,12 @@ function kt_render_notice_metabox( $post ) {
  * Сохранение метаполей
  */
 function kt_save_notice_meta( $post_id ) {
+    // Защита от повторного вызова
+    static $processed = [];
+    if ( isset( $processed[ $post_id ] ) ) {
+        return;
+    }
+
     // Проверки
     if ( ! isset( $_POST['kt_notice_nonce'] ) ) {
         return;
@@ -252,6 +258,9 @@ function kt_save_notice_meta( $post_id ) {
     if ( ! current_user_can( 'edit_post', $post_id ) ) {
         return;
     }
+
+    // Отмечаем что обрабатываем этот пост
+    $processed[ $post_id ] = true;
 
     // Сохранение полей
     $fields = [ 'kt_notice_organization', 'kt_notice_date', 'kt_notice_year', 'kt_notice_month' ];
@@ -280,13 +289,17 @@ function kt_save_notice_meta( $post_id ) {
             $month_name = kt_get_month_genitive( $month );
             $new_title  = sprintf( 'Извещение участникам %s %s %s', $organization, $month_name, $year );
 
-            // Обновляем заголовок
-            remove_action( 'save_post', 'kt_save_notice_meta' );
+            // Обновляем заголовок (отключаем хуки чтобы избежать рекурсии)
+            remove_action( 'save_post_kt_notice', 'kt_save_notice_meta' );
+            remove_action( 'wp_after_insert_post', 'kt_auto_extract_file_from_content', 20 );
+
             wp_update_post( [
                 'ID'         => $post_id,
                 'post_title' => $new_title,
             ] );
-            add_action( 'save_post', 'kt_save_notice_meta' );
+
+            add_action( 'save_post_kt_notice', 'kt_save_notice_meta' );
+            add_action( 'wp_after_insert_post', 'kt_auto_extract_file_from_content', 20, 3 );
         }
     }
 }
@@ -379,6 +392,12 @@ function kt_get_notice_views( $post_id = null ) {
  * Используем wp_after_insert_post — работает и с Gutenberg (REST API)
  */
 function kt_auto_extract_file_from_content( $post_id, $post, $update ) {
+    // Защита от повторного вызова
+    static $processed = [];
+    if ( isset( $processed[ $post_id ] ) ) {
+        return;
+    }
+
     // Только для kt_notice
     if ( ! $post || $post->post_type !== 'kt_notice' ) {
         return;
@@ -393,6 +412,9 @@ function kt_auto_extract_file_from_content( $post_id, $post, $update ) {
     if ( ! in_array( $post->post_status, [ 'publish', 'draft', 'pending' ], true ) ) {
         return;
     }
+
+    // Отмечаем что обрабатываем этот пост
+    $processed[ $post_id ] = true;
 
     // Парсим блоки
     $blocks = parse_blocks( $post->post_content );
