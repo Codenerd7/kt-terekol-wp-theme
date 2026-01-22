@@ -18,7 +18,6 @@ get_header();
 $notice_date   = get_post_meta( get_the_ID(), 'kt_notice_date', true );
 $notice_file   = get_post_meta( get_the_ID(), 'kt_notice_file', true );
 $notice_views  = kt_get_notice_views();
-$published     = get_the_date( 'd.m.Y' );
 
 // Ссылка "назад"
 $notices_page = get_page_by_path( 'izveshcheniya' );
@@ -46,7 +45,7 @@ $back_url     = $notices_page ? get_permalink( $notices_page ) : get_post_type_a
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            Дата извещения: <?php echo esc_html( date_i18n( 'd.m.Y', strtotime( $notice_date ) ) ); ?>
+                            Опубликовано на сайте: <?php echo esc_html( date_i18n( 'd.m.Y', strtotime( $notice_date ) ) ); ?>
                         </span>
                     <?php endif; ?>
 
@@ -79,11 +78,6 @@ $back_url     = $notices_page ? get_permalink( $notices_page ) : get_post_type_a
                 </div>
             <?php endif; ?>
 
-            <footer class="notice-single__footer">
-                <p class="notice-single__published">
-                    Опубликовано на сайте: <?php echo esc_html( $published ); ?>
-                </p>
-            </footer>
         </div>
     </article>
 </main>
