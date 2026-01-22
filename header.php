@@ -88,7 +88,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                 <!-- CTA Button -->
                 <div class="header__cta">
-                    <a href="#request" class="btn btn-primary">
+                    <a href="<?php echo is_front_page() ? '#apply' : esc_url( home_url( '/#apply' ) ); ?>" class="btn btn-primary">
                         Оставить заявку
                     </a>
                 </div>
