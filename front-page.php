@@ -61,6 +61,8 @@ get_header();
     </div>
   </section>
 
+  <?php get_template_part( 'template-parts/section', 'about' ); ?>
+
   <?php get_template_part( 'template-parts/section', 'stats' ); ?>
 
   <?php
