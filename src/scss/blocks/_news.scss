@@ -73,7 +73,7 @@
 
 .news-card {
   background: var(--color-bg);
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition-base), transform var(--transition-base);
@@ -157,7 +157,7 @@
 .article-card {
   background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   overflow: hidden;
   transition: border-color var(--transition-base), box-shadow var(--transition-base);
 

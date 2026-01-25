@@ -28,7 +28,7 @@
 .report-card {
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   overflow: hidden;
   transition:
     transform var(--transition-base),
@@ -287,9 +287,7 @@
 // Latest Reports (Homepage)
 // ===================
 
-.latest-reports {
-  background-color: var(--color-surface);
-}
+// Фон задаётся через .section--alt
 
 .latest-reports__header {
   display: flex;
