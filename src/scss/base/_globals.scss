@@ -261,6 +261,19 @@ body {
   margin: 0;
 }
 
+// Микро-описание секции
+.section-subtitle {
+  margin: var(--space-2) 0 0;
+  max-width: 720px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-muted);
+
+  @media (min-width: $breakpoint-md) {
+    font-size: 1rem;
+  }
+}
+
 // Декоративный разделитель под заголовком
 .section-divider {
   margin-top: var(--space-4);

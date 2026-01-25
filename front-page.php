@@ -83,6 +83,7 @@ get_header();
         <div class="section-head">
           <p class="section-eyebrow">Документы</p>
           <h2 class="latest-reports__title section-title">Отчёты</h2>
+          <p class="section-subtitle">Официальные отчёты и документы о деятельности кооператива.</p>
           <div class="section-divider" aria-hidden="true"></div>
         </div>
         <a href="<?php echo esc_url( get_post_type_archive_link( 'kt_report' ) ); ?>" class="latest-reports__link">
@@ -123,6 +124,7 @@ get_header();
             <div class="section-head">
               <p class="section-eyebrow">Актуальное</p>
               <h2 class="latest-news__title section-title">Новости</h2>
+              <p class="section-subtitle">Актуальные события, изменения и объявления.</p>
               <div class="section-divider" aria-hidden="true"></div>
             </div>
             <a href="<?php echo esc_url( get_category_link( $news_cat ) ); ?>" class="latest-news__link">
@@ -164,6 +166,7 @@ get_header();
             <div class="section-head">
               <p class="section-eyebrow">Полезное</p>
               <h2 class="latest-articles__title section-title">Статьи</h2>
+              <p class="section-subtitle">Полезные материалы для сельхозпроизводителей.</p>
               <div class="section-divider" aria-hidden="true"></div>
             </div>
             <a href="<?php echo esc_url( get_category_link( $articles_cat ) ); ?>" class="latest-articles__link">

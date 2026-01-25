@@ -10,6 +10,7 @@
       <div class="section-head">
         <p class="section-eyebrow">О проекте</p>
         <h2 class="about__title section-title">Кто мы и для кого работаем</h2>
+        <p class="section-subtitle">Работаем с хозяйствами Тереңкөлского района, сопровождая заявки и документы.</p>
         <div class="section-divider" aria-hidden="true"></div>
       </div>
 
