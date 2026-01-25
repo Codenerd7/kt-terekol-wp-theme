@@ -232,6 +232,20 @@ body {
   padding-bottom: var(--space-6);
 }
 
+// Шапка секции (eyebrow + title + divider)
+.section-head {
+  margin-bottom: var(--space-6);
+
+  @media (min-width: $breakpoint-md) {
+    margin-bottom: var(--space-8);
+  }
+
+  // Внутри header (flex-раскладка) — без margin, header сам управляет отступами
+  header & {
+    margin-bottom: 0;
+  }
+}
+
 // Eyebrow — надзаголовок секции
 .section-eyebrow {
   font-size: 0.75rem;
@@ -245,6 +259,15 @@ body {
 // Заголовок секции
 .section-title {
   margin: 0;
+}
+
+// Декоративный разделитель под заголовком
+.section-divider {
+  margin-top: var(--space-4);
+  width: 72px;
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 40%, transparent);
 }
 
 // Альтернативный фон для чередования секций

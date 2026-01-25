@@ -7,8 +7,11 @@
 <section class="section section--alt about">
   <div class="container">
     <div class="about__inner">
-      <p class="section-eyebrow">О проекте</p>
-      <h2 class="about__title section-title">Кто мы и для кого работаем</h2>
+      <div class="section-head">
+        <p class="section-eyebrow">О проекте</p>
+        <h2 class="about__title section-title">Кто мы и для кого работаем</h2>
+        <div class="section-divider" aria-hidden="true"></div>
+      </div>
 
       <div class="about__text">
         <p>Мы работаем с крестьянскими и фермерскими хозяйствами, индивидуальными предпринимателями, занятых в сфере земледелия и животноводства Тереңкөлского района. Основной фокус — доступные кредитные решения.</p>

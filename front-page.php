@@ -80,9 +80,10 @@ get_header();
   <section class="section section--alt latest-reports">
     <div class="container">
       <header class="latest-reports__header">
-        <div>
+        <div class="section-head">
           <p class="section-eyebrow">Документы</p>
           <h2 class="latest-reports__title section-title">Отчёты</h2>
+          <div class="section-divider" aria-hidden="true"></div>
         </div>
         <a href="<?php echo esc_url( get_post_type_archive_link( 'kt_report' ) ); ?>" class="latest-reports__link">
           Все отчёты &rarr;
@@ -119,9 +120,10 @@ get_header();
       <section class="section latest-news">
         <div class="container">
           <header class="latest-news__header">
-            <div>
+            <div class="section-head">
               <p class="section-eyebrow">Актуальное</p>
               <h2 class="latest-news__title section-title">Новости</h2>
+              <div class="section-divider" aria-hidden="true"></div>
             </div>
             <a href="<?php echo esc_url( get_category_link( $news_cat ) ); ?>" class="latest-news__link">
               Все новости &rarr;
@@ -159,9 +161,10 @@ get_header();
       <section class="section section--alt latest-articles">
         <div class="container">
           <header class="latest-articles__header">
-            <div>
+            <div class="section-head">
               <p class="section-eyebrow">Полезное</p>
               <h2 class="latest-articles__title section-title">Статьи</h2>
+              <div class="section-divider" aria-hidden="true"></div>
             </div>
             <a href="<?php echo esc_url( get_category_link( $articles_cat ) ); ?>" class="latest-articles__link">
               Все статьи &rarr;
