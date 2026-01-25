@@ -61,6 +61,8 @@ get_header();
     </div>
   </section>
 
+  <?php get_template_part( 'template-parts/section', 'stats' ); ?>
+
   <?php
   // Секция "Свежие отчёты" — приоритет №1
   $reports_query = new WP_Query( [
@@ -76,7 +78,7 @@ get_header();
   <section class="section latest-reports">
     <div class="container">
       <header class="latest-reports__header">
-        <h2 class="latest-reports__title">Свежие отчёты</h2>
+        <h2 class="latest-reports__title">Отчеты</h2>
         <a href="<?php echo esc_url( get_post_type_archive_link( 'kt_report' ) ); ?>" class="latest-reports__link">
           Все отчёты &rarr;
         </a>
