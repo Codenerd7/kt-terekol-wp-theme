@@ -27,19 +27,38 @@ if ( ! defined( 'ABSPATH' ) ) {
     <div class="header__top">
         <div class="container">
             <div class="header__top-inner">
-                <a href="https://2gis.kz/search/Павлодарская%20область%2C%20район%20Тереңкөл%2C%20село%20Теренколь%2C%20улица%20Торайгырова%2C%20104А" class="header__top-address" target="_blank" rel="noopener noreferrer">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                    Павлодарская обл., с. Теренколь — открыть в 2GIS
-                </a>
+                <?php
+                $address   = kt_get_contact_address();
+                $gis_url   = kt_get_contact_2gis_url();
+                $phone     = kt_get_contact_phone();
+                $phone_tel = kt_get_contact_phone_link();
+                $whatsapp  = kt_get_contact_whatsapp();
+                $wa_link   = kt_get_contact_whatsapp_link();
+                ?>
+                <?php if ( $address && $gis_url ) : ?>
+                    <a href="<?php echo esc_url( $gis_url ); ?>" class="header__top-address" target="_blank" rel="noopener noreferrer">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <?php echo esc_html( $address ); ?> — открыть в 2GIS
+                    </a>
+                <?php elseif ( $address ) : ?>
+                    <span class="header__top-address">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <?php echo esc_html( $address ); ?>
+                    </span>
+                <?php endif; ?>
                 <div class="header__top-contacts">
-                    <a href="tel:+77088083374" class="header__phone">
-                        <span class="header__icon">&#128222;</span>
-                        +7 (708) 808-33-74
-                    </a>
-                    <a href="https://wa.me/77088083374" class="header__whatsapp" target="_blank" rel="noopener noreferrer">
-                        <span class="header__icon">&#128172;</span>
-                        WhatsApp
-                    </a>
+                    <?php if ( $phone ) : ?>
+                        <a href="tel:<?php echo esc_attr( $phone_tel ); ?>" class="header__phone">
+                            <span class="header__icon">&#128222;</span>
+                            <?php echo esc_html( $phone ); ?>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ( $whatsapp && $wa_link ) : ?>
+                        <a href="<?php echo esc_url( $wa_link ); ?>" class="header__whatsapp" target="_blank" rel="noopener noreferrer">
+                            <span class="header__icon">&#128172;</span>
+                            WhatsApp
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

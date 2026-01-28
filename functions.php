@@ -21,10 +21,11 @@ define( 'KT_THEME_URI', get_template_directory_uri() );
  * Подключение модулей темы
  */
 $kt_includes = [
-    '/inc/setup.php',      // Базовая настройка темы
-    '/inc/enqueue.php',    // Подключение стилей и скриптов
-    '/inc/helpers.php',    // Вспомогательные функции
-    '/inc/leads-form.php', // Заявки: колонки в админке
+    '/inc/setup.php',       // Базовая настройка темы
+    '/inc/enqueue.php',     // Подключение стилей и скриптов
+    '/inc/helpers.php',     // Вспомогательные функции
+    '/inc/customizer.php',  // Настройки Customizer (контакты и др.)
+    '/inc/leads-form.php',  // Заявки: колонки в админке
 ];
 
 foreach ( $kt_includes as $file ) {
