@@ -27,9 +27,13 @@ $header-top-height: 40px;
 .header__top-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   height: $header-top-height;
   gap: var(--space-4);
+
+  @media (min-width: $breakpoint-lg) {
+    justify-content: space-between;
+  }
 }
 
 .header__top-address {
@@ -52,7 +56,10 @@ $header-top-height: 40px;
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  margin-left: auto;
+
+  @media (min-width: $breakpoint-lg) {
+    margin-left: auto;
+  }
 }
 
 .header__icon {
