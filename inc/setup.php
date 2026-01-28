@@ -33,7 +33,7 @@ function kt_theme_setup() {
 
     // Логотип
     add_theme_support( 'custom-logo', [
-        'height'      => 100,
+        'height'      => 80,
         'width'       => 300,
         'flex-height' => true,
         'flex-width'  => true,
