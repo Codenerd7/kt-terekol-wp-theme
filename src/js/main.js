@@ -73,6 +73,65 @@ function initMobileMenu() {
 }
 
 /**
+ * Stats Counter Animation
+ * Анимация цифр при появлении в viewport
+ */
+function initStatsCounter() {
+  const counters = document.querySelectorAll('.kt-metrics__value[data-count]');
+
+  if (!counters.length) return;
+
+  // Форматирование числа с пробелами
+  const formatNumber = (num) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  };
+
+  // Анимация счётчика
+  const animateCounter = (element) => {
+    const target = parseInt(element.dataset.count, 10);
+    const duration = 2000; // мс
+    const startTime = performance.now();
+
+    const updateCounter = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Easing: ease-out cubic
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(easeOut * target);
+
+      element.textContent = formatNumber(current);
+
+      if (progress < 1) {
+        requestAnimationFrame(updateCounter);
+      } else {
+        element.textContent = formatNumber(target);
+      }
+    };
+
+    requestAnimationFrame(updateCounter);
+  };
+
+  // IntersectionObserver для запуска при появлении
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target); // Только один раз
+        }
+      });
+    },
+    {
+      threshold: 0.3, // Запуск когда 30% элемента видно
+      rootMargin: '0px 0px -50px 0px',
+    }
+  );
+
+  counters.forEach((counter) => observer.observe(counter));
+}
+
+/**
  * Smooth scroll for anchor links
  */
 function initSmoothScroll() {
@@ -103,4 +162,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initMobileMenu();
   initSmoothScroll();
+  initStatsCounter();
 });

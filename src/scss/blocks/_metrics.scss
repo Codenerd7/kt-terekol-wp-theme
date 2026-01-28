@@ -1,0 +1,116 @@
+/**
+ * Metrics Section Styles
+ *
+ * Секция «Ключевые показатели»
+ * Светлый дизайн, белые карточки, зелёные акценты.
+ */
+
+.kt-metrics {
+  padding: var(--space-8) 0 var(--space-10);
+  background: var(--color-surface);
+
+  // Заголовок секции
+  &__header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 var(--space-3);
+
+    @media (min-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  &__subtitle {
+    font-size: 1rem;
+    color: var(--color-muted);
+    margin: 0;
+  }
+
+  // Сетка карточек
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+
+    @media (min-width: 600px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1000px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  // Карточка показателя
+  &__card {
+    background: var(--color-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: box-shadow var(--transition-base), transform var(--transition-base);
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+      transform: translateY(-2px);
+    }
+  }
+
+  // Иконка
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    border-radius: 12px;
+    margin-bottom: var(--space-4);
+
+    svg {
+      width: 28px;
+      height: 28px;
+      color: var(--color-accent);
+    }
+  }
+
+  // Значение (число)
+  &__value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin-bottom: var(--space-2);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+
+    @media (min-width: 768px) {
+      font-size: 2rem;
+    }
+
+    // Зелёное подчёркивание
+    &::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 3px;
+      background: var(--color-accent);
+      border-radius: 2px;
+      margin: var(--space-3) auto 0;
+    }
+  }
+
+  // Подпись
+  &__label {
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+    line-height: 1.4;
+    margin-top: var(--space-3);
+  }
+}

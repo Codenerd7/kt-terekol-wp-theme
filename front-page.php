@@ -151,7 +151,7 @@ get_header();
   if ( $articles_cat ) :
       $articles_query = new WP_Query( [
           'post_type'      => 'post',
-          'posts_per_page' => 3,
+          'posts_per_page' => 2,
           'post_status'    => 'publish',
           'cat'            => $articles_cat->term_id,
           'orderby'        => 'date',
