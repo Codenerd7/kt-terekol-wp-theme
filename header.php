@@ -57,10 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <span class="header__divider"></span>
                     <?php endif; ?>
                     <?php if ( $whatsapp && $wa_link ) : ?>
-                        <a href="<?php echo esc_url( $wa_link ); ?>" class="header__whatsapp" target="_blank" rel="noopener noreferrer">
-                            <svg class="header__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                            WhatsApp
-                        </a>
+                        <a href="<?php echo esc_url( $wa_link ); ?>" class="header__whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp</a>
                     <?php endif; ?>
                 </div>
             </div>
