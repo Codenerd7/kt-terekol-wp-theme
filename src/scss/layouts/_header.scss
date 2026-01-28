@@ -56,7 +56,7 @@ $header-top-height: 40px;
 }
 
 .header__icon {
-  font-style: normal;
+  flex-shrink: 0;
   line-height: 1;
 }
 
@@ -77,11 +77,17 @@ $header-top-height: 40px;
 }
 
 .header__whatsapp {
-  color: #25d366;
+  color: #4a9c6d; // приглушённый зелёный
 
   &:hover {
-    color: #128c7e;
+    color: #3d8259; // чуть темнее
   }
+}
+
+.header__divider {
+  width: 1px;
+  height: 16px;
+  background-color: var(--color-border);
 }
 
 // ===================
