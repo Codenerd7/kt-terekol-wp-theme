@@ -155,6 +155,65 @@ function initSmoothScroll() {
 }
 
 /**
+ * Projects Slider (Swiper)
+ */
+function initProjectsSlider() {
+  const sliderEl = document.getElementById('projects-slider');
+
+  if (!sliderEl || typeof Swiper === 'undefined') return;
+
+  new Swiper(sliderEl, {
+    slidesPerView: 1,
+    spaceBetween: 16,
+    grabCursor: true,
+    loop: false,
+
+    // Responsive breakpoints
+    breakpoints: {
+      576: {
+        slidesPerView: 2,
+        spaceBetween: 20,
+      },
+      900: {
+        slidesPerView: 3,
+        spaceBetween: 24,
+      },
+    },
+
+    // Navigation arrows
+    navigation: {
+      prevEl: '.projects-slider__btn--prev',
+      nextEl: '.projects-slider__btn--next',
+    },
+
+    // Pagination dots
+    pagination: {
+      el: '.projects-slider__pagination',
+      clickable: true,
+    },
+  });
+}
+
+/**
+ * Projects Lightbox (GLightbox)
+ */
+function initProjectsLightbox() {
+  if (typeof GLightbox === 'undefined') return;
+
+  const galleryElements = document.querySelectorAll('.glightbox');
+
+  if (!galleryElements.length) return;
+
+  GLightbox({
+    selector: '.glightbox',
+    touchNavigation: true,
+    loop: true,
+    closeButton: true,
+    zoomable: true,
+  });
+}
+
+/**
  * Initialize
  */
 document.addEventListener('DOMContentLoaded', () => {
@@ -163,4 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
   initSmoothScroll();
   initStatsCounter();
+  initProjectsSlider();
+  initProjectsLightbox();
 });

@@ -1,0 +1,266 @@
+/**
+ * Projects Section Styles
+ *
+ * Стили для секции "Наши проекты" на главной странице.
+ * Слайдер с карточками проектов + lightbox.
+ */
+
+// ===================
+// Секция
+// ===================
+
+.projects-section {
+  padding: var(--space-8) 0;
+
+  &__header {
+    margin-bottom: var(--space-6);
+  }
+
+  &__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+  }
+}
+
+// ===================
+// Слайдер
+// ===================
+
+.projects-slider {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: var(--space-8); // Место для пагинации
+
+  .swiper-wrapper {
+    align-items: stretch;
+  }
+
+  .swiper-slide {
+    height: auto;
+  }
+
+  &__nav {
+    display: flex;
+    gap: var(--space-2);
+    justify-content: center;
+    margin-top: var(--space-4);
+
+    @media (min-width: 768px) {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(calc(-50% - var(--space-4)));
+      justify-content: space-between;
+      pointer-events: none;
+      margin-top: 0;
+      padding: 0 var(--space-2);
+      z-index: 10;
+    }
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-bg);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    pointer-events: auto;
+
+    &:hover {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      box-shadow: var(--shadow);
+    }
+
+    &:disabled,
+    &.swiper-button-disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+
+      &:hover {
+        border-color: var(--color-border);
+        color: var(--color-text);
+        box-shadow: none;
+      }
+    }
+
+    @media (min-width: 768px) {
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  &__pagination {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: var(--space-2);
+
+    .swiper-pagination-bullet {
+      width: 10px;
+      height: 10px;
+      background: var(--color-border);
+      border-radius: 50%;
+      opacity: 1;
+      transition: all var(--transition-base);
+      cursor: pointer;
+
+      &:hover {
+        background: var(--color-muted);
+      }
+
+      &-active {
+        background: var(--color-primary);
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+// ===================
+// Карточка проекта
+// ===================
+
+.project-card {
+  background: var(--color-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--transition-base);
+
+  &:hover {
+    box-shadow: var(--shadow);
+  }
+
+  &__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &__image {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-base);
+
+    .project-card:hover & {
+      transform: scale(1.05);
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+
+    .project-card:hover & {
+      opacity: 1;
+    }
+  }
+
+  &__zoom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    color: var(--color-primary);
+    transform: scale(0.8);
+    transition: transform var(--transition-base);
+
+    .project-card:hover & {
+      transform: scale(1);
+    }
+  }
+
+  &__body {
+    padding: var(--space-4);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0 0 var(--space-2);
+    color: var(--color-text);
+  }
+
+  &__text {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin: 0;
+    // Ограничение на 3 строки
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+// ===================
+// GLightbox overrides
+// ===================
+
+.glightbox-container {
+  .gslide-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .gclose {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  .gprev,
+  .gnext {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+  }
+}

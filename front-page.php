@@ -146,6 +146,11 @@ get_header();
   ?>
 
   <?php
+  // Секция "Наши проекты" (слайдер)
+  get_template_part( 'template-parts/section', 'projects' );
+  ?>
+
+  <?php
   // Секция "Статьи"
   $articles_cat = get_category_by_slug( 'articles' );
   if ( $articles_cat ) :
