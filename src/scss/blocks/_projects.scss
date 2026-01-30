@@ -42,18 +42,18 @@
 
   &__nav {
     position: absolute;
-    top: 50%;
+    bottom: -12px;
     left: 0;
     right: 0;
-    transform: translateY(calc(-50% - var(--space-4)));
     display: flex;
     justify-content: space-between;
+    align-items: center;
     pointer-events: none;
     z-index: 10;
-    padding: 0;
+    padding: 0 var(--space-4);
 
     @media (min-width: 768px) {
-      padding: 0 var(--space-2);
+      padding: 0 var(--space-6);
     }
   }
 
@@ -91,21 +91,6 @@
       }
     }
 
-    &--prev {
-      margin-left: -16px;
-
-      @media (min-width: 768px) {
-        margin-left: 0;
-      }
-    }
-
-    &--next {
-      margin-right: -16px;
-
-      @media (min-width: 768px) {
-        margin-right: 0;
-      }
-    }
 
     @media (min-width: 768px) {
       width: 48px;
@@ -115,7 +100,7 @@
 
   &__pagination {
     position: absolute;
-    bottom: 0;
+    bottom: -12px;
     left: 0;
     right: 0;
     display: flex;
