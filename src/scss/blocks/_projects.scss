@@ -43,9 +43,10 @@
   &__nav {
     position: absolute;
     top: 50%;
-    left: 0;
-    right: 0;
-    transform: translateY(calc(-50% - var(--space-4)));
+    left: 50%;
+    transform: translate(-50%, calc(-50% - var(--space-4)));
+    width: 100%;
+    max-width: var(--container);
     display: flex;
     justify-content: space-between;
     pointer-events: none;
@@ -54,6 +55,11 @@
 
     @media (min-width: 768px) {
       padding: 0 var(--space-2);
+    }
+
+    // На больших экранах выводим стрелки за контейнер
+    @media (min-width: 1300px) {
+      max-width: calc(var(--container) + 120px);
     }
   }
 
