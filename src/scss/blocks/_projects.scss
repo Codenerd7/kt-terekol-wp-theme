@@ -29,8 +29,7 @@
 
 .projects-slider {
   position: relative;
-  overflow: hidden;
-  padding-bottom: var(--space-8);
+  padding-bottom: 70px;
 
   .swiper-wrapper {
     align-items: stretch;
@@ -42,7 +41,7 @@
 
   &__nav {
     position: absolute;
-    bottom: -12px;
+    bottom: 8px;
     left: 0;
     right: 0;
     display: flex;
@@ -100,7 +99,7 @@
 
   &__pagination {
     position: absolute;
-    bottom: -12px;
+    bottom: 16px;
     left: 0;
     right: 0;
     display: flex;
