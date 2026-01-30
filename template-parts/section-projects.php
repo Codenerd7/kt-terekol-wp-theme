@@ -2,8 +2,9 @@
 /**
  * Секция "Наши проекты" для главной страницы
  *
- * Слайдер с фото и описанием проектов.
- * При клике на слайд открывается lightbox с увеличенным фото.
+ * Слайдер проектов:
+ * - Фото: первое изображение галереи как превью, клик открывает lightbox-галерею
+ * - Видео: превью с иконкой play, клик открывает видео в lightbox
  *
  * @package KT_Terekol
  * @since 1.0.0
@@ -40,50 +41,116 @@ if ( ! $projects_query->have_posts() ) {
 
         <div class="projects-slider swiper" id="projects-slider">
             <div class="swiper-wrapper">
-                <?php while ( $projects_query->have_posts() ) : $projects_query->the_post();
-                    $image_id = get_post_meta( get_the_ID(), 'kt_project_image_id', true );
-                    $text     = get_post_meta( get_the_ID(), 'kt_project_text', true );
+                <?php
+                $slide_index = 0;
+                while ( $projects_query->have_posts() ) : $projects_query->the_post();
+                    $media_type = get_post_meta( get_the_ID(), 'kt_project_media_type', true ) ?: 'photo';
+                    $text       = get_post_meta( get_the_ID(), 'kt_project_text', true );
+                    $title      = get_the_title();
 
-                    if ( ! $image_id ) {
-                        continue;
+                    // Пропускаем проекты без медиа
+                    if ( $media_type === 'photo' ) {
+                        $gallery = get_post_meta( get_the_ID(), 'kt_project_gallery', true );
+                        if ( empty( $gallery ) || ! is_array( $gallery ) ) {
+                            continue;
+                        }
+                    } else {
+                        $video_url = get_post_meta( get_the_ID(), 'kt_project_video_url', true );
+                        if ( empty( $video_url ) ) {
+                            continue;
+                        }
                     }
 
-                    $image_full   = wp_get_attachment_image_url( $image_id, 'large' );
-                    $image_medium = wp_get_attachment_image_url( $image_id, 'medium_large' );
-                    $image_alt    = get_post_meta( $image_id, '_wp_attachment_image_alt', true ) ?: get_the_title();
+                    $gallery_id = 'project-' . get_the_ID();
                 ?>
                 <div class="swiper-slide">
-                    <article class="project-card">
-                        <a href="<?php echo esc_url( $image_full ); ?>"
-                           class="project-card__link glightbox"
-                           data-gallery="projects"
-                           data-glightbox="title: <?php echo esc_attr( get_the_title() ); ?>">
-                            <div class="project-card__image">
-                                <img src="<?php echo esc_url( $image_medium ); ?>"
-                                     alt="<?php echo esc_attr( $image_alt ); ?>"
-                                     class="project-card__img"
-                                     loading="lazy">
-                                <div class="project-card__overlay">
-                                    <span class="project-card__zoom">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="11" cy="11" r="8"></circle>
-                                            <path d="m21 21-4.35-4.35"></path>
-                                            <path d="M11 8v6"></path>
-                                            <path d="M8 11h6"></path>
-                                        </svg>
-                                    </span>
+                    <article class="project-card project-card--<?php echo esc_attr( $media_type ); ?>">
+                        <?php if ( $media_type === 'photo' ) :
+                            // Галерея фото
+                            $first_image_id = $gallery[0];
+                            $preview_url    = wp_get_attachment_image_url( $first_image_id, 'medium_large' );
+                            $preview_alt    = get_post_meta( $first_image_id, '_wp_attachment_image_alt', true ) ?: $title;
+                        ?>
+                            <!-- Первое фото как превью (видимый слайд) -->
+                            <a href="<?php echo esc_url( wp_get_attachment_image_url( $first_image_id, 'large' ) ); ?>"
+                               class="project-card__link glightbox"
+                               data-gallery="<?php echo esc_attr( $gallery_id ); ?>"
+                               data-glightbox="title: <?php echo esc_attr( $title ); ?>">
+                                <div class="project-card__image">
+                                    <img src="<?php echo esc_url( $preview_url ); ?>"
+                                         alt="<?php echo esc_attr( $preview_alt ); ?>"
+                                         class="project-card__img"
+                                         loading="lazy">
+                                    <div class="project-card__overlay">
+                                        <span class="project-card__zoom">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="11" cy="11" r="8"></circle>
+                                                <path d="m21 21-4.35-4.35"></path>
+                                                <path d="M11 8v6"></path>
+                                                <path d="M8 11h6"></path>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <?php if ( count( $gallery ) > 1 ) : ?>
+                                    <span class="project-card__count"><?php echo count( $gallery ); ?> фото</span>
+                                    <?php endif; ?>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+
+                            <!-- Остальные фото галереи (скрытые, для lightbox) -->
+                            <?php for ( $i = 1; $i < count( $gallery ); $i++ ) :
+                                $img_id  = $gallery[ $i ];
+                                $img_url = wp_get_attachment_image_url( $img_id, 'large' );
+                                $img_alt = get_post_meta( $img_id, '_wp_attachment_image_alt', true ) ?: $title;
+                            ?>
+                            <a href="<?php echo esc_url( $img_url ); ?>"
+                               class="project-card__gallery-item glightbox"
+                               data-gallery="<?php echo esc_attr( $gallery_id ); ?>"
+                               data-glightbox="title: <?php echo esc_attr( $title ); ?>"
+                               style="display: none;"></a>
+                            <?php endfor; ?>
+
+                        <?php else :
+                            // Видео
+                            $video_thumb = kt_get_video_thumbnail( $video_url );
+                            $embed_url   = kt_get_video_embed_url( $video_url );
+                        ?>
+                            <a href="<?php echo esc_url( $embed_url ); ?>"
+                               class="project-card__link glightbox"
+                               data-gallery="<?php echo esc_attr( $gallery_id ); ?>"
+                               data-glightbox="title: <?php echo esc_attr( $title ); ?>">
+                                <div class="project-card__image">
+                                    <?php if ( $video_thumb ) : ?>
+                                    <img src="<?php echo esc_url( $video_thumb ); ?>"
+                                         alt="<?php echo esc_attr( $title ); ?>"
+                                         class="project-card__img"
+                                         loading="lazy">
+                                    <?php else : ?>
+                                    <div class="project-card__video-placeholder"></div>
+                                    <?php endif; ?>
+                                    <div class="project-card__overlay project-card__overlay--video">
+                                        <span class="project-card__play">
+                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        <?php endif; ?>
+
                         <?php if ( $text ) : ?>
                         <div class="project-card__body">
-                            <h3 class="project-card__title"><?php the_title(); ?></h3>
+                            <h3 class="project-card__title"><?php echo esc_html( $title ); ?></h3>
                             <p class="project-card__text"><?php echo esc_html( $text ); ?></p>
                         </div>
                         <?php endif; ?>
                     </article>
                 </div>
-                <?php endwhile; ?>
+                <?php
+                    $slide_index++;
+                endwhile;
+                ?>
             </div>
 
             <!-- Navigation -->

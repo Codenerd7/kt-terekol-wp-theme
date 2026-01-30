@@ -3,7 +3,7 @@
  * Custom Post Type: Наши проекты (kt_project)
  *
  * Регистрация типа записи для проектов.
- * Только 2 поля: фото и текст (через мета-боксы).
+ * Тип медиа: Фото (галерея) ИЛИ Видео (YouTube/Vimeo).
  * Без архива, без single page.
  *
  * @package KT_Terekol
@@ -37,18 +37,18 @@ function kt_register_project_post_type() {
     $args = [
         'labels'              => $labels,
         'public'              => true,
-        'publicly_queryable'  => false, // Отключаем single page
+        'publicly_queryable'  => false,
         'show_ui'             => true,
         'show_in_menu'        => true,
-        'show_in_rest'        => false, // Без Gutenberg
+        'show_in_rest'        => false,
         'query_var'           => false,
-        'rewrite'             => false, // Без URL
+        'rewrite'             => false,
         'capability_type'     => 'post',
-        'has_archive'         => false, // Без архива
+        'has_archive'         => false,
         'hierarchical'        => false,
         'menu_position'       => 8,
         'menu_icon'           => 'dashicons-images-alt2',
-        'supports'            => [ 'title' ], // Только заголовок
+        'supports'            => [ 'title' ],
     ];
 
     register_post_type( 'kt_project', $args );
@@ -61,11 +61,11 @@ add_action( 'init', 'kt_register_project_post_type' );
 add_action( 'add_meta_boxes', 'kt_add_project_metaboxes' );
 
 function kt_add_project_metaboxes(): void {
-    // Мета-бокс для фото
+    // Основной мета-бокс с медиа
     add_meta_box(
-        'kt_project_image',
-        'Фото проекта',
-        'kt_render_project_image_metabox',
+        'kt_project_media',
+        'Медиа проекта',
+        'kt_render_project_media_metabox',
         'kt_project',
         'normal',
         'high'
@@ -83,32 +83,153 @@ function kt_add_project_metaboxes(): void {
 }
 
 /**
- * Рендер мета-бокса "Фото проекта"
+ * Рендер мета-бокса "Медиа проекта"
  */
-function kt_render_project_image_metabox( $post ): void {
-    $image_id = get_post_meta( $post->ID, 'kt_project_image_id', true );
-    $image_url = $image_id ? wp_get_attachment_image_url( $image_id, 'medium' ) : '';
+function kt_render_project_media_metabox( $post ): void {
+    $media_type = get_post_meta( $post->ID, 'kt_project_media_type', true ) ?: 'photo';
+    $gallery    = get_post_meta( $post->ID, 'kt_project_gallery', true ) ?: [];
+    $video_url  = get_post_meta( $post->ID, 'kt_project_video_url', true );
 
     wp_nonce_field( 'kt_project_metabox', 'kt_project_nonce' );
     ?>
-    <div class="kt-project-image-wrapper">
-        <div class="kt-project-image-preview" id="kt-project-image-preview" style="margin-bottom: 10px; <?php echo $image_url ? '' : 'display:none;'; ?>">
-            <img src="<?php echo esc_url( $image_url ); ?>" style="max-width: 300px; height: auto; border-radius: 4px;">
+    <style>
+        .kt-project-media-type { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #ddd; }
+        .kt-project-media-type label { margin-right: 20px; font-weight: 500; }
+        .kt-project-media-type input[type="radio"] { margin-right: 5px; }
+        .kt-project-field { margin-bottom: 15px; }
+        .kt-project-field-label { display: block; font-weight: 600; margin-bottom: 8px; }
+        .kt-project-gallery-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        .kt-project-gallery-item { position: relative; width: 120px; height: 90px; border-radius: 4px; overflow: hidden; background: #f0f0f0; }
+        .kt-project-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .kt-project-gallery-item-remove { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; cursor: pointer; font-size: 14px; line-height: 1; }
+        .kt-project-gallery-item-remove:hover { background: #dc3545; }
+        .kt-project-gallery-item.is-first::after { content: 'Превью'; position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,100,200,0.8); color: #fff; font-size: 10px; text-align: center; padding: 2px; }
+        .kt-project-video-field { max-width: 500px; }
+        .kt-project-video-preview { margin-top: 10px; }
+        .kt-project-video-preview img { max-width: 300px; border-radius: 4px; }
+        [data-media-section="video"] { display: none; }
+        .kt-project-media-type-photo [data-media-section="photo"] { display: block; }
+        .kt-project-media-type-photo [data-media-section="video"] { display: none; }
+        .kt-project-media-type-video [data-media-section="photo"] { display: none; }
+        .kt-project-media-type-video [data-media-section="video"] { display: block; }
+    </style>
+
+    <div class="kt-project-media-wrapper kt-project-media-type-<?php echo esc_attr( $media_type ); ?>" id="kt-project-media-wrapper">
+        <!-- Выбор типа медиа -->
+        <div class="kt-project-media-type">
+            <span class="kt-project-field-label">Тип медиа:</span>
+            <label>
+                <input type="radio" name="kt_project_media_type" value="photo" <?php checked( $media_type, 'photo' ); ?>>
+                Фото
+            </label>
+            <label>
+                <input type="radio" name="kt_project_media_type" value="video" <?php checked( $media_type, 'video' ); ?>>
+                Видео
+            </label>
         </div>
-        <input type="hidden" id="kt_project_image_id" name="kt_project_image_id" value="<?php echo esc_attr( $image_id ); ?>">
-        <button type="button" class="button" id="kt-project-image-upload">
-            <?php echo $image_id ? 'Изменить фото' : 'Выбрать фото'; ?>
-        </button>
-        <button type="button" class="button" id="kt-project-image-remove" style="<?php echo $image_id ? '' : 'display:none;'; ?>">
-            Удалить фото
-        </button>
+
+        <!-- Секция для фото -->
+        <div class="kt-project-field" data-media-section="photo">
+            <span class="kt-project-field-label">Галерея изображений:</span>
+            <p class="description" style="margin-bottom: 10px;">Первое изображение будет использоваться как превью в слайдере.</p>
+
+            <div class="kt-project-gallery-preview" id="kt-project-gallery-preview">
+                <?php
+                if ( ! empty( $gallery ) && is_array( $gallery ) ) :
+                    foreach ( $gallery as $index => $image_id ) :
+                        $img_url = wp_get_attachment_image_url( $image_id, 'thumbnail' );
+                        if ( $img_url ) :
+                ?>
+                    <div class="kt-project-gallery-item <?php echo $index === 0 ? 'is-first' : ''; ?>" data-id="<?php echo esc_attr( $image_id ); ?>">
+                        <img src="<?php echo esc_url( $img_url ); ?>" alt="">
+                        <button type="button" class="kt-project-gallery-item-remove" title="Удалить">&times;</button>
+                    </div>
+                <?php
+                        endif;
+                    endforeach;
+                endif;
+                ?>
+            </div>
+
+            <input type="hidden" name="kt_project_gallery" id="kt-project-gallery-input" value="<?php echo esc_attr( is_array( $gallery ) ? implode( ',', $gallery ) : '' ); ?>">
+
+            <button type="button" class="button" id="kt-project-gallery-upload">Добавить изображения</button>
+            <button type="button" class="button" id="kt-project-gallery-clear" style="<?php echo empty( $gallery ) ? 'display:none;' : ''; ?>">Очистить галерею</button>
+        </div>
+
+        <!-- Секция для видео -->
+        <div class="kt-project-field" data-media-section="video">
+            <span class="kt-project-field-label">Ссылка на видео:</span>
+            <p class="description" style="margin-bottom: 10px;">Поддерживаются YouTube и Vimeo.</p>
+
+            <input
+                type="url"
+                id="kt_project_video_url"
+                name="kt_project_video_url"
+                value="<?php echo esc_url( $video_url ); ?>"
+                class="widefat kt-project-video-field"
+                placeholder="https://www.youtube.com/watch?v=... или https://vimeo.com/..."
+            >
+
+            <div class="kt-project-video-preview" id="kt-project-video-preview">
+                <?php if ( $video_url ) : ?>
+                    <?php
+                    $video_id = kt_get_video_id( $video_url );
+                    $video_type = kt_get_video_type( $video_url );
+                    if ( $video_id && $video_type ) :
+                        $thumb_url = kt_get_video_thumbnail( $video_url );
+                    ?>
+                        <img src="<?php echo esc_url( $thumb_url ); ?>" alt="Превью видео">
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 
     <script>
     jQuery(document).ready(function($) {
         var frame;
+        var $wrapper = $('#kt-project-media-wrapper');
+        var $preview = $('#kt-project-gallery-preview');
+        var $input = $('#kt-project-gallery-input');
+        var $clearBtn = $('#kt-project-gallery-clear');
 
-        $('#kt-project-image-upload').on('click', function(e) {
+        // Переключение типа медиа
+        $('input[name="kt_project_media_type"]').on('change', function() {
+            var type = $(this).val();
+            $wrapper.removeClass('kt-project-media-type-photo kt-project-media-type-video')
+                    .addClass('kt-project-media-type-' + type);
+        });
+
+        // Обновление порядка и значения input
+        function updateGalleryInput() {
+            var ids = [];
+            $preview.find('.kt-project-gallery-item').each(function(index) {
+                ids.push($(this).data('id'));
+                $(this).toggleClass('is-first', index === 0);
+            });
+            $input.val(ids.join(','));
+            $clearBtn.toggle(ids.length > 0);
+        }
+
+        // Drag & drop сортировка
+        if ($.fn.sortable) {
+            $preview.sortable({
+                items: '.kt-project-gallery-item',
+                cursor: 'move',
+                update: updateGalleryInput
+            });
+        }
+
+        // Удаление одного изображения
+        $preview.on('click', '.kt-project-gallery-item-remove', function(e) {
+            e.preventDefault();
+            $(this).closest('.kt-project-gallery-item').remove();
+            updateGalleryInput();
+        });
+
+        // Загрузка изображений
+        $('#kt-project-gallery-upload').on('click', function(e) {
             e.preventDefault();
 
             if (frame) {
@@ -117,33 +238,71 @@ function kt_render_project_image_metabox( $post ): void {
             }
 
             frame = wp.media({
-                title: 'Выберите фото проекта',
-                button: { text: 'Использовать это фото' },
-                multiple: false
+                title: 'Выберите изображения для галереи',
+                button: { text: 'Добавить в галерею' },
+                multiple: true,
+                library: { type: 'image' }
             });
 
             frame.on('select', function() {
-                var attachment = frame.state().get('selection').first().toJSON();
-                $('#kt_project_image_id').val(attachment.id);
+                var attachments = frame.state().get('selection').toJSON();
 
-                var imgUrl = attachment.sizes && attachment.sizes.medium
-                    ? attachment.sizes.medium.url
-                    : attachment.url;
+                attachments.forEach(function(attachment) {
+                    var imgUrl = attachment.sizes && attachment.sizes.thumbnail
+                        ? attachment.sizes.thumbnail.url
+                        : attachment.url;
 
-                $('#kt-project-image-preview').show().find('img').attr('src', imgUrl);
-                $('#kt-project-image-upload').text('Изменить фото');
-                $('#kt-project-image-remove').show();
+                    var $item = $('<div class="kt-project-gallery-item" data-id="' + attachment.id + '">' +
+                        '<img src="' + imgUrl + '" alt="">' +
+                        '<button type="button" class="kt-project-gallery-item-remove" title="Удалить">&times;</button>' +
+                        '</div>');
+
+                    $preview.append($item);
+                });
+
+                updateGalleryInput();
             });
 
             frame.open();
         });
 
-        $('#kt-project-image-remove').on('click', function(e) {
+        // Очистить галерею
+        $('#kt-project-gallery-clear').on('click', function(e) {
             e.preventDefault();
-            $('#kt_project_image_id').val('');
-            $('#kt-project-image-preview').hide().find('img').attr('src', '');
-            $('#kt-project-image-upload').text('Выбрать фото');
-            $(this).hide();
+            if (confirm('Удалить все изображения из галереи?')) {
+                $preview.empty();
+                updateGalleryInput();
+            }
+        });
+
+        // Превью видео при вводе URL
+        var videoTimeout;
+        $('#kt_project_video_url').on('input', function() {
+            var url = $(this).val();
+            var $videoPreview = $('#kt-project-video-preview');
+
+            clearTimeout(videoTimeout);
+
+            if (!url) {
+                $videoPreview.empty();
+                return;
+            }
+
+            videoTimeout = setTimeout(function() {
+                // Определяем тип видео и получаем превью
+                var youtubeMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+                var vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+
+                if (youtubeMatch) {
+                    var thumbUrl = 'https://img.youtube.com/vi/' + youtubeMatch[1] + '/mqdefault.jpg';
+                    $videoPreview.html('<img src="' + thumbUrl + '" alt="Превью видео">');
+                } else if (vimeoMatch) {
+                    // Для Vimeo нужен API запрос, показываем заглушку
+                    $videoPreview.html('<p style="color: #666;">Превью Vimeo будет отображаться на сайте</p>');
+                } else {
+                    $videoPreview.html('<p style="color: #dc3545;">Неподдерживаемый формат ссылки</p>');
+                }
+            }, 500);
         });
     });
     </script>
@@ -173,39 +332,56 @@ function kt_render_project_text_metabox( $post ): void {
 add_action( 'save_post_kt_project', 'kt_save_project_meta' );
 
 function kt_save_project_meta( $post_id ): void {
-    // Проверка nonce
     if ( ! isset( $_POST['kt_project_nonce'] ) || ! wp_verify_nonce( $_POST['kt_project_nonce'], 'kt_project_metabox' ) ) {
         return;
     }
 
-    // Проверка автосохранения
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
         return;
     }
 
-    // Проверка прав
     if ( ! current_user_can( 'edit_post', $post_id ) ) {
         return;
     }
 
-    // Сохранение ID изображения
-    if ( isset( $_POST['kt_project_image_id'] ) ) {
-        $image_id = absint( $_POST['kt_project_image_id'] );
-        if ( $image_id ) {
-            update_post_meta( $post_id, 'kt_project_image_id', $image_id );
-        } else {
-            delete_post_meta( $post_id, 'kt_project_image_id' );
+    // Тип медиа
+    if ( isset( $_POST['kt_project_media_type'] ) ) {
+        $media_type = sanitize_text_field( $_POST['kt_project_media_type'] );
+        if ( in_array( $media_type, [ 'photo', 'video' ], true ) ) {
+            update_post_meta( $post_id, 'kt_project_media_type', $media_type );
         }
     }
 
-    // Сохранение текста
+    // Галерея
+    if ( isset( $_POST['kt_project_gallery'] ) ) {
+        $gallery_str = sanitize_text_field( $_POST['kt_project_gallery'] );
+        if ( $gallery_str ) {
+            $gallery = array_map( 'absint', explode( ',', $gallery_str ) );
+            $gallery = array_filter( $gallery );
+            update_post_meta( $post_id, 'kt_project_gallery', $gallery );
+        } else {
+            delete_post_meta( $post_id, 'kt_project_gallery' );
+        }
+    }
+
+    // URL видео
+    if ( isset( $_POST['kt_project_video_url'] ) ) {
+        $video_url = esc_url_raw( $_POST['kt_project_video_url'] );
+        if ( $video_url ) {
+            update_post_meta( $post_id, 'kt_project_video_url', $video_url );
+        } else {
+            delete_post_meta( $post_id, 'kt_project_video_url' );
+        }
+    }
+
+    // Текст
     if ( isset( $_POST['kt_project_text'] ) ) {
         update_post_meta( $post_id, 'kt_project_text', sanitize_textarea_field( $_POST['kt_project_text'] ) );
     }
 }
 
 /**
- * Подключение медиа-загрузчика в админке для kt_project
+ * Подключение медиа-загрузчика и jQuery UI Sortable
  */
 add_action( 'admin_enqueue_scripts', 'kt_project_admin_scripts' );
 
@@ -214,7 +390,100 @@ function kt_project_admin_scripts( $hook ): void {
 
     if ( ( $hook === 'post.php' || $hook === 'post-new.php' ) && $post_type === 'kt_project' ) {
         wp_enqueue_media();
+        wp_enqueue_script( 'jquery-ui-sortable' );
     }
+}
+
+/**
+ * Получить ID видео из URL
+ */
+function kt_get_video_id( $url ) {
+    // YouTube
+    if ( preg_match( '/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $url, $matches ) ) {
+        return $matches[1];
+    }
+
+    // Vimeo
+    if ( preg_match( '/vimeo\.com\/(?:video\/)?(\d+)/', $url, $matches ) ) {
+        return $matches[1];
+    }
+
+    return false;
+}
+
+/**
+ * Определить тип видео (youtube/vimeo)
+ */
+function kt_get_video_type( $url ) {
+    if ( strpos( $url, 'youtube.com' ) !== false || strpos( $url, 'youtu.be' ) !== false ) {
+        return 'youtube';
+    }
+
+    if ( strpos( $url, 'vimeo.com' ) !== false ) {
+        return 'vimeo';
+    }
+
+    return false;
+}
+
+/**
+ * Получить URL превью видео
+ */
+function kt_get_video_thumbnail( $url ) {
+    $video_id = kt_get_video_id( $url );
+    $video_type = kt_get_video_type( $url );
+
+    if ( ! $video_id || ! $video_type ) {
+        return '';
+    }
+
+    if ( $video_type === 'youtube' ) {
+        return 'https://img.youtube.com/vi/' . $video_id . '/maxresdefault.jpg';
+    }
+
+    if ( $video_type === 'vimeo' ) {
+        // Vimeo требует API, используем placeholder или кэшируем
+        $cached = get_transient( 'kt_vimeo_thumb_' . $video_id );
+        if ( $cached ) {
+            return $cached;
+        }
+
+        $response = wp_remote_get( 'https://vimeo.com/api/v2/video/' . $video_id . '.json' );
+        if ( ! is_wp_error( $response ) ) {
+            $body = json_decode( wp_remote_retrieve_body( $response ), true );
+            if ( ! empty( $body[0]['thumbnail_large'] ) ) {
+                $thumb_url = $body[0]['thumbnail_large'];
+                set_transient( 'kt_vimeo_thumb_' . $video_id, $thumb_url, DAY_IN_SECONDS );
+                return $thumb_url;
+            }
+        }
+
+        return '';
+    }
+
+    return '';
+}
+
+/**
+ * Получить embed URL для видео
+ */
+function kt_get_video_embed_url( $url ) {
+    $video_id = kt_get_video_id( $url );
+    $video_type = kt_get_video_type( $url );
+
+    if ( ! $video_id || ! $video_type ) {
+        return '';
+    }
+
+    if ( $video_type === 'youtube' ) {
+        return 'https://www.youtube.com/embed/' . $video_id . '?autoplay=1';
+    }
+
+    if ( $video_type === 'vimeo' ) {
+        return 'https://player.vimeo.com/video/' . $video_id . '?autoplay=1';
+    }
+
+    return '';
 }
 
 /**
@@ -227,7 +496,8 @@ function kt_project_admin_columns( $columns ) {
 
     foreach ( $columns as $key => $value ) {
         if ( $key === 'title' ) {
-            $new_columns['kt_project_thumb'] = 'Фото';
+            $new_columns['kt_project_thumb'] = 'Превью';
+            $new_columns['kt_project_type'] = 'Тип';
         }
         $new_columns[ $key ] = $value;
     }
@@ -239,24 +509,48 @@ add_action( 'manage_kt_project_posts_custom_column', 'kt_project_admin_column_co
 
 function kt_project_admin_column_content( $column, $post_id ): void {
     if ( $column === 'kt_project_thumb' ) {
-        $image_id = get_post_meta( $post_id, 'kt_project_image_id', true );
-        if ( $image_id ) {
-            $img = wp_get_attachment_image( $image_id, [ 60, 60 ], false, [ 'style' => 'border-radius: 4px;' ] );
-            echo $img;
+        $media_type = get_post_meta( $post_id, 'kt_project_media_type', true ) ?: 'photo';
+
+        if ( $media_type === 'photo' ) {
+            $gallery = get_post_meta( $post_id, 'kt_project_gallery', true );
+            if ( ! empty( $gallery ) && is_array( $gallery ) ) {
+                $img = wp_get_attachment_image( $gallery[0], [ 60, 60 ], false, [ 'style' => 'border-radius: 4px;' ] );
+                echo $img;
+            } else {
+                echo '<span style="color: #999;">—</span>';
+            }
         } else {
-            echo '<span style="color: #999;">—</span>';
+            $video_url = get_post_meta( $post_id, 'kt_project_video_url', true );
+            if ( $video_url ) {
+                $thumb = kt_get_video_thumbnail( $video_url );
+                if ( $thumb ) {
+                    echo '<img src="' . esc_url( $thumb ) . '" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">';
+                } else {
+                    echo '<span style="color: #999;">▶</span>';
+                }
+            } else {
+                echo '<span style="color: #999;">—</span>';
+            }
         }
+    }
+
+    if ( $column === 'kt_project_type' ) {
+        $media_type = get_post_meta( $post_id, 'kt_project_media_type', true ) ?: 'photo';
+        echo $media_type === 'video' ? 'Видео' : 'Фото';
     }
 }
 
 /**
- * Стили для колонки с миниатюрой
+ * Стили для колонок
  */
 add_action( 'admin_head', 'kt_project_admin_column_styles' );
 
 function kt_project_admin_column_styles(): void {
     global $post_type;
     if ( $post_type === 'kt_project' ) {
-        echo '<style>.column-kt_project_thumb { width: 70px; }</style>';
+        echo '<style>
+            .column-kt_project_thumb { width: 70px; }
+            .column-kt_project_type { width: 80px; }
+        </style>';
     }
 }
