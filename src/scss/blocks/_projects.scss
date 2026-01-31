@@ -47,6 +47,7 @@
   cursor: pointer;
   transition: all var(--transition-base);
   box-shadow: 0 4px 12px rgba(3, 105, 161, 0.4);
+  outline: none; // Убираем стандартный квадратный outline
 
   svg {
     width: 22px;
@@ -54,10 +55,32 @@
     stroke-width: 2.5;
   }
 
+  // Hover - увеличение и подсветка
   &:hover {
     background: #0284c7;
     box-shadow: 0 6px 20px rgba(3, 105, 161, 0.5);
     transform: translateY(-50%) scale(1.1);
+  }
+
+  // Active (нажатие) - небольшое сжатие
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+    box-shadow: 0 2px 8px rgba(3, 105, 161, 0.4);
+  }
+
+  // Focus - круглое кольцо для доступности (keyboard navigation)
+  &:focus,
+  &:focus-visible {
+    box-shadow:
+      0 4px 12px rgba(3, 105, 161, 0.4),
+      0 0 0 3px rgba(3, 105, 161, 0.3);
+  }
+
+  // Focus-visible only (Tab navigation) - более заметное кольцо
+  &:focus-visible {
+    box-shadow:
+      0 4px 12px rgba(3, 105, 161, 0.4),
+      0 0 0 4px rgba(3, 105, 161, 0.4);
   }
 
   &:disabled,
@@ -67,7 +90,9 @@
     background: #9ca3af;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
-    &:hover {
+    &:hover,
+    &:active,
+    &:focus {
       background: #9ca3af;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
       transform: translateY(-50%);
