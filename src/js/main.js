@@ -186,9 +186,9 @@ function initProjectsSlider() {
       nextEl: '.projects-nav--next',
     },
 
-    // Pagination dots
+    // Pagination dots (вынесена из swiper)
     pagination: {
-      el: '.projects-slider__pagination',
+      el: '.projects-pagination',
       clickable: true,
     },
   });

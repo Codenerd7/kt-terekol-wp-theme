@@ -196,9 +196,10 @@ if ( ! $projects_query->have_posts() ) {
                 </div>
                 <?php endwhile; ?>
             </div>
-
-            <div class="projects-slider__pagination swiper-pagination"></div>
         </div>
+
+        <!-- Пагинация вынесена из swiper -->
+        <div class="projects-pagination"></div>
     </div>
 </section>
 
