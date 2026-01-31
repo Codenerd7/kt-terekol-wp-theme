@@ -29,6 +29,18 @@ if ( ! $projects_query->have_posts() ) {
 ?>
 
 <section class="section projects-section">
+    <!-- Навигация вынесена из swiper, позиционируется относительно секции -->
+    <button class="projects-nav projects-nav--prev" aria-label="Предыдущий проект">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+        </svg>
+    </button>
+    <button class="projects-nav projects-nav--next" aria-label="Следующий проект">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6"/>
+        </svg>
+    </button>
+
     <div class="container">
         <header class="projects-section__header">
             <div class="section-head">
@@ -183,19 +195,6 @@ if ( ! $projects_query->have_posts() ) {
                     </article>
                 </div>
                 <?php endwhile; ?>
-            </div>
-
-            <div class="projects-slider__nav">
-                <button class="projects-slider__btn projects-slider__btn--prev" aria-label="Предыдущий проект">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m15 18-6-6 6-6"/>
-                    </svg>
-                </button>
-                <button class="projects-slider__btn projects-slider__btn--next" aria-label="Следующий проект">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m9 18 6-6-6-6"/>
-                    </svg>
-                </button>
             </div>
 
             <div class="projects-slider__pagination swiper-pagination"></div>

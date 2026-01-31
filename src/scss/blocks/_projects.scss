@@ -10,6 +10,7 @@
 // ===================
 
 .projects-section {
+  position: relative; // Для позиционирования стрелок
   padding: var(--space-8) 0;
 
   &__header {
@@ -20,6 +21,93 @@
     font-size: 1.75rem;
     font-weight: 700;
     margin: 0;
+  }
+}
+
+// ===================
+// Навигация слайдера (вынесена из swiper)
+// ===================
+
+.projects-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+
+  // Базовые стили кнопки
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #0369a1;
+  color: #fff;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 12px rgba(3, 105, 161, 0.4);
+
+  svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2.5;
+  }
+
+  &:hover {
+    background: #0284c7;
+    box-shadow: 0 6px 20px rgba(3, 105, 161, 0.5);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:disabled,
+  &.swiper-button-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #9ca3af;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+    &:hover {
+      background: #9ca3af;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transform: translateY(-50%);
+    }
+  }
+
+  @media (min-width: 768px) {
+    width: 48px;
+    height: 48px;
+  }
+
+  // На мобильных - поверх слайдов
+  &--prev {
+    left: var(--container-padding);
+  }
+
+  &--next {
+    right: var(--container-padding);
+  }
+
+  // На планшетах - ближе к краям контейнера
+  @media (min-width: 768px) {
+    &--prev {
+      left: calc(50% - min(var(--container), 100%) / 2 + var(--container-padding));
+    }
+
+    &--next {
+      right: calc(50% - min(var(--container), 100%) / 2 + var(--container-padding));
+    }
+  }
+
+  // На больших экранах (>=1300px) - ВНЕ контейнера, на белом фоне
+  @media (min-width: 1300px) {
+    &--prev {
+      left: calc(50% - 570px - 60px); // 1140/2 = 570 (max-width container) + отступ
+    }
+
+    &--next {
+      right: calc(50% - 570px - 60px);
+    }
   }
 }
 

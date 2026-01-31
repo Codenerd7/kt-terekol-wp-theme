@@ -180,10 +180,10 @@ function initProjectsSlider() {
       },
     },
 
-    // Navigation arrows
+    // Navigation arrows (вынесены из swiper на уровень секции)
     navigation: {
-      prevEl: '.projects-slider__btn--prev',
-      nextEl: '.projects-slider__btn--next',
+      prevEl: '.projects-nav--prev',
+      nextEl: '.projects-nav--next',
     },
 
     // Pagination dots
