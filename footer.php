@@ -117,6 +117,16 @@ if ( ! defined( 'ABSPATH' ) ) {
         </div>
     </div>
 
+    <div class="footer-license">
+        <div class="container">
+            <div class="footer-license__inner">
+                <?php $upload = wp_upload_dir(); ?>
+                <p class="footer-license__text">Лицензия АРРФР №14.21.0009.К от 26.03.2021 года на право осуществления микрофинансовой деятельности</p>
+                <a class="footer-license__btn" href="<?php echo esc_url( $upload['baseurl'] . '/2026/02/Лицензия.pdf' ); ?>" target="_blank" rel="noopener noreferrer">Читать</a>
+            </div>
+        </div>
+    </div>
+
     <div class="footer__bottom">
         <div class="container">
             <div class="footer__bottom-inner">
