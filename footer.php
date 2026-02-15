@@ -32,6 +32,11 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <p class="footer__description">
                             ТОО «КТ Теренколь» — микрофинансовая организация, специализирующаяся на кредитовании субъектов агропромышленного комплекса Республики Казахстан.
                         </p>
+                        <?php $upload = wp_upload_dir(); ?>
+                        <div class="footer-license">
+                            <p class="footer-license__text">Лицензия АРРФР №14.21.0009.К от 26.03.2021 года<br>на право осуществления микрофинансовой деятельности</p>
+                            <a class="footer-license__btn" href="<?php echo esc_url( $upload['baseurl'] . '/2026/02/Лицензия.pdf' ); ?>" target="_blank" rel="noopener noreferrer">Читать</a>
+                        </div>
                     </div>
                 </div>
 
@@ -113,16 +118,6 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </ul>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer-license">
-        <div class="container">
-            <div class="footer-license__inner">
-                <?php $upload = wp_upload_dir(); ?>
-                <p class="footer-license__text">Лицензия АРРФР №14.21.0009.К от 26.03.2021 года<br>на право осуществления микрофинансовой деятельности</p>
-                <a class="footer-license__btn" href="<?php echo esc_url( $upload['baseurl'] . '/2026/02/Лицензия.pdf' ); ?>" target="_blank" rel="noopener noreferrer">Читать</a>
             </div>
         </div>
     </div>
